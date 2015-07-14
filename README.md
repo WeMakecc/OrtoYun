@@ -1,4 +1,4 @@
-# ortoYun - InternetOfGreens
+# OrtoYun - InternetOfGreens
 
 L'ortoYun è la verisone IoG ( Internet of Green ) di un orto tradizionale o idroponico gestito dall'Arduino Yùn.
 La versione corrente è evoluzione della verione basata su Arduino Mega2560 ed Ethernet shield
