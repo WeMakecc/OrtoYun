@@ -23,8 +23,6 @@ void setup() {
   pinMode(pinPump2,OUTPUT);
   pinMode(pinFert1,OUTPUT);
   
-  pinMode(pinValF1,INPUT);
-  
   for(byte isens = 0; isens < nsens ; isens++){
     pinMode(pinEC1[isens],OUTPUT);
     pinMode(pinEC2[isens],INPUT);

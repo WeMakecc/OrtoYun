@@ -199,21 +199,14 @@ float readEC( byte isens ) {
 
 void apriGocciolatore() {
    Serial.println( "apri" );
-   while ( digitalRead(pinValF1) == 1 ) {
-     analogWrite(pinFert1,100);
-   }
-   analogWrite(pinFert1,0);
+   digitalWrite(pinFert1,HIGH);
 }
 
 /**********************************************************************************/
 
 void chiudiGocciolatore() {
    Serial.println( "chiudi" );
-   while ( digitalRead(pinValF1) == 0 ) {
-     analogWrite(pinFert1,100);
-   }
-   delay( 100 );
-   analogWrite(pinFert1,0);
+   digitalWrite(pinFert1,LOW);
 }
 
 /**********************************************************************************/
