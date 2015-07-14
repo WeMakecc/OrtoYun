@@ -1,4 +1,4 @@
-# ortoYun - InternetOfGreens
+# OrtoYun - InternetOfGreens
 
 L'ortoYun è la verisone IoG ( Internet of Green ) di un orto tradizionale o idroponico gestito dall'Arduino Yùn.
 La versione corrente è evoluzione della verione basata su Arduino Mega2560 ed Ethernet shield
@@ -12,7 +12,7 @@ Caratteristiche/Obiettivi del progetto:
 
 Sensori/Attuatori presenti:
 
-- n.4 relay a 200v per il controllo di 2 serie di luci e 2 pompe;
+- n.4 relay a 220v per il controllo di 2 serie di luci e 2 pompe;
 - n.1 sistema di fertilizzazione con elettrovalvola;
 - n.1 pH Meter 
 - n.2 sensori EC ( Conducibilità elettrica dell'acqua );
