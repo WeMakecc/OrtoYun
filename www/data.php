@@ -68,7 +68,7 @@ function getValData( $arr = array(), $data = null ) {
 	
 	if ( !empty( $vora ) ) {
 		if ( count( $arr[$vora] ) <= 0) return $arr;
-		foreach ($arr[$vora] as $h => $value) { if (($h%2) == 0) $_arr[$h] = $value; } $arr = $_arr; } 
+		foreach ($arr[$vora] as $h => $value) { /* if (($h%2) == 0) $_arr[$h] = $value; */ $_arr[$h] = $value; } $arr = $_arr; } 
 	else {
 		if ( count( $arr ) <= 0) return $arr;
 		foreach ($arr as $h => $value) { $_arr[$h] = end($value); }
@@ -154,14 +154,15 @@ function getEndData( $date, $formato ) {
 
 /***********************************************************************************/
 
-function formatData( $data = null ) {
+function formatData( $data = null, $valore = null ) {
 	$anno    = substr($data,0,4);
 	$mese    = substr($data,4,2);
 	$giorno  = substr($data,6,2);
 	$ora     = substr($data,8,2);
 	
-	$data = (!empty($giorno))? $giorno . "/" . $mese . "/" . $anno : $mese . "/" . $anno;
-	if (!empty($ora)) { $data .= " h: " . $ora;  }
+	if (empty($giorno))  { $data = $valore . "/" . $mese . "/" . $anno; }
+	if (!empty($giorno)) { $data = $giorno . "/" . $mese . "/" . $anno ." h: " . $valore; }
+	if (!empty($ora))    { $data = $giorno . "/" . $mese . "/" . $anno ."h: " . $ora . ":" .$valore;  }
 	
 	return $data;
 }
@@ -252,6 +253,20 @@ function formatData( $data = null ) {
 				<a href="index.php"><img src="images/home-icon.gif" border="0"></a>
 				&nbsp; &nbsp; &nbsp; &nbsp; 
 				<?php if (getNextVal( $viewdata,$rows ) > $viewdata) { ?><a href="data.php?sensor=<?php echo $_GET['sensor']. "&data=" . getNextVal( $viewdata,$rows ); ?>"><img src="images/right-arrow-icon.gif" width="32" height="32" border="0" /></a><?php } else { ?><img src="images/right-arrow-icon.gif" width="32" height="32" border="0" /><?php } ?>
+			</div>
+			<br />
+			<div class="list-container">
+			   <ul class="list-container-ul">
+			      <li class="list-item">Sensore</li>
+			      <?php foreach ($vdata as $var => $value) { ?>
+				<li class="list-item">
+				    <ul>
+					<li class="list-subitem"><?php echo formatData( $_GET['data'],$var ); ?></li>
+					<li class="list-subitem"><?php echo $value; ?></li>
+			            </ul>
+			         </li>
+			      <?php } ?>
+			   </ul>
 			</div>
 		</div>
 	</body>

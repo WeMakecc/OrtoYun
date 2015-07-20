@@ -5,10 +5,8 @@
  * Twitter: @mauroalfieri
  *
  */
-
 #include <FileIO.h>
 #include <HttpClient.h>
-#include <ArduinoJson.h>
 #include "ortoConfig.h"
 
 void setup() {
@@ -22,40 +20,34 @@ void setup() {
   pinMode(pinPump1,OUTPUT);
   pinMode(pinPump2,OUTPUT);
   pinMode(pinFert1,OUTPUT);
-  
+ 
   for(byte isens = 0; isens < nsens ; isens++){
     pinMode(pinEC1[isens],OUTPUT);
     pinMode(pinEC2[isens],INPUT);
     pinMode(pinEC3[isens],OUTPUT);
   }
-  analogWrite(pinFert1,0);
+ 
+  digitalWrite(pinFert1,0);
 }
 
 void loop () {
   currMin  = getInterval("+%M");
   currHour = getInterval("+%H");
   
-  Serial.println("\n---------------");
-  Serial.println( getTime() );
-
-  if ( (currMin == 0 || currMin == 30) && currMin != old ) {
-    old = currMin;
+  /**********************************************************************************/
+  
+  #ifdef DEBUG  
+    Serial.println("\n------------------");
+    Serial.println( getTime() );
+  #endif
+  
+  /**********************************************************************************/
+  if ( (currMin == 0 || currMin == 30) && currMin != lastMin ) {
+    lastMin = currMin;
     
     /**********************************************************************************/
-
-    if ( getApiSmartCitizen( SmartCitizenApiKey ) ) {
     
-      #ifdef DEBUG  
-        Serial.print( "Temp: " ); Serial.print(temp);  Serial.println(" ");
-        Serial.print( "Hum:  " ); Serial.print(hum);   Serial.println(" %");
-        Serial.print( "Co: "   ); Serial.print(co);    Serial.println(" Co");
-        Serial.print( "No2: " );  Serial.print(no2);   Serial.println(" No");
-        Serial.print( "Nois: " ); Serial.print(noise); Serial.println("");
-        Serial.print( "Luce: " ); Serial.print(light); Serial.println("");
-        Serial.print( "Batt: " ); Serial.print(batt);  Serial.println("v");
-      #endif  
-      
-    }
+    getApiSmartCitizen();
     
     /**********************************************************************************/
      
@@ -74,8 +66,8 @@ void loop () {
 
   /**********************************************************************************/
   
-  if ( ((20 <= currHour && currHour <= 23)  || (5 <= currHour && currHour <= 7)) && currMin == 20 && currMin != old ) {
-    old = currMin;
+  if ( ((20 <= currHour && currHour <= 23)  || (5 <= currHour && currHour <= 7)) && currMin == 20 && currMin != lastMin ) {
+    lastMin = currMin;
     CS1 = readEC(0);
   }
   
@@ -95,44 +87,71 @@ void loop () {
 
   /**********************************************************************************/
   
-  if ( 7 <= currHour && currHour <= 20 && statusLight == false ) { // Luci accese
+  if ( 7 <= currHour && currHour <= 20 && statusLight1 == false ) { // Luci accese
      digitalWrite(pinLamp1,HIGH);
-     digitalWrite(pinLamp2,HIGH);
-     
-     statusLight = true;
+     statusLight1 = true;
   }
-   
-  if ( ((21 <= currHour && currHour <= 23)  || (0 <= currHour && currHour <= 6)) && statusLight == true ) { // Luci accese
+  
+  if ( ((21 <= currHour && currHour <= 23)  || (0 <= currHour && currHour <= 6)) && statusLight1 == true ) { // Luci accese
     digitalWrite(pinLamp1,LOW);
-    digitalWrite(pinLamp2,LOW);
-    
-    statusLight = false;
+    statusLight1 = false;
+  }
+  
+  /**********************************************************************************/
+  
+  if ( 7 <= currHour && currHour <= 20 && statusLight2 == false ) { // Luci accese
+     digitalWrite(pinLamp2,HIGH);
+     statusLight2 = true;
   }
    
+  if ( ((21 <= currHour && currHour <= 23)  || (0 <= currHour && currHour <= 6)) && statusLight2 == true ) { // Luci accese
+    digitalWrite(pinLamp2,LOW);
+    statusLight2 = false;
+  }
+  
   /**********************************************************************************/
   
   if (( 8 <= currHour && currHour <= 21 ) && (0 <= currMin && currMin <= 15)) {
-      if ( !statusPump ) {
+      if ( !statusPump1 ) {
         digitalWrite(pinPump1,HIGH); delay( 100 );
+        statusPump1 = true;
+      }
+      if ( !statusPump2 ) {
         digitalWrite(pinPump2,HIGH); delay( 100 );
-        
-        statusPump = true;
+        statusPump2 = true;
       }
   } else {
-   if ( statusPump ) {
-       digitalWrite(pinPump1,LOW); delay( 100 );
-       digitalWrite(pinPump2,LOW); delay( 100 );
-       
-       statusPump = false;
+     if ( statusPump1 ) {
+         digitalWrite(pinPump1,LOW); delay( 100 );
+         statusPump1 = false;
+     }
+     if ( statusPump2 ) {
+         digitalWrite(pinPump2,LOW); delay( 100 );
+         statusPump2 = false;
      }
   }
    
   /**********************************************************************************/
   
-  if ( currMin != old ) {
+  #ifdef DEBUG
+    Serial.print  ( "Controllo curr: " );
+    Serial.print  ( currMin );
+    Serial.print  ( " last: " );
+    Serial.print( lastMin );
+    Serial.print  ( " write: " );
+    Serial.println( writeMin );
+  #endif
+  
+  /**********************************************************************************/
+  
+  if ( currMin != writeMin ) {
+    writeMin = currMin;
+    
+    getApiSmartCitizen();
+    
     String dataString;
     dataString += getTime();
-  
+/*  
     dataString += " "; dataString += String( temp );
     dataString += " "; dataString += String( hum );
     dataString += " "; dataString += String( co );
@@ -140,13 +159,16 @@ void loop () {
     dataString += " "; dataString += String( noise );
     dataString += " "; dataString += String( light );
     dataString += " "; dataString += String( batt );
-    
+*/
+    dataString += " "; dataString += String( results );
     dataString += " "; dataString += String( pHValue );
     dataString += " "; dataString += String( level );
     dataString += " "; dataString += String( CS1 );
     dataString += " "; dataString += String( fertil );
-    dataString += " "; dataString += String( statusLight );
-    dataString += " "; dataString += String( statusPump );
+    dataString += " "; dataString += String( statusLight1 );
+    dataString += " "; dataString += String( statusLight2 );
+    dataString += " "; dataString += String( statusPump1 );
+    dataString += " "; dataString += String( statusPump2 );
     
     File dataFile = FileSystem.open(logFile, FILE_APPEND);
     if (dataFile) {
@@ -156,7 +178,6 @@ void loop () {
   }
   
   /**********************************************************************************/
-
-  delay(60000);
+  delay(30000);
   
 } // end loop

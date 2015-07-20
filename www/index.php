@@ -20,7 +20,7 @@ $data  = date('Ymd');
 						<li class="list-item">
 							<ul>
 								<li class="list-subitem"><a href="data.php?sensor=<?php echo $var."&data=".$data; ?>"><?php echo $value['label']; ?></a></li>
-								<li class="list-subitem"><?php echo $endValues[($value['pos']-1)] . " " . $value['unita']; ?></li>
+								<li class="list-subitem"><?php echo "<b>" . $endValues[($value['pos']-1)] . "</b> " . $value['unita']; ?></li>
 							</ul>
 						</li>
 					<?php } ?>

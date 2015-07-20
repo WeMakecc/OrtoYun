@@ -14,6 +14,10 @@
 #define pinPump2     13            // Relay Pump 2
 #define pinFert1     3             // elettrovalvola Fertilizzante
 
+int index = 0;
+boolean startData = false;
+char results[textBuffSize];
+
 double temp, hum, co, no2, light, noise, batt;
   
 /**********************************************************************************/
@@ -25,8 +29,10 @@ static byte  fertil  = 0;
 
 /**********************************************************************************/
 
-boolean statusLight = false;
-boolean statusPump  = false;
+boolean statusLight1 = false;
+boolean statusLight2 = false;
+boolean statusPump1  = false;
+boolean statusPump2  = false;
 boolean statusFert  = false;
 byte lastTimeSet = 0;
 char lcdBuffer1[16] = "";
@@ -50,13 +56,10 @@ byte n = 50;
 
 /**********************************************************************************/
 
-String SmartCitizenApiKey = "26515ecad271367264ff71ee4c2e4fb3f24191bb";
-
-/**********************************************************************************/
-
-int currHour = 0;
-int currMin  = 0;
-int old      = 0;
+byte currHour = 0;
+byte currMin  = 0;
+byte lastMin  = -1;
+byte writeMin = -1;
 
 /**********************************************************************************/
 

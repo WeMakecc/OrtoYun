@@ -1,54 +1,22 @@
 /**********************************************************************************/
 
-boolean getApiSmartCitizen(String APIKEY) {
-  int index = 0;
-  boolean startData = false;
-  char results[textBuffSize];
-  
-  String url  = "http://api.smartcitizen.me/v0.0.1/";
-         url += APIKEY;
-         url  = "/lastpost.json";
+boolean getApiSmartCitizen() {
   
   HttpClient client;
-  client.get(url); // get SmartCitizen Data
-
-  #ifdef DEBUG
-      Serial.print("SmartCitizen: ");
-      Serial.println("connected");
-  #endif
-  
+  int lenght = client.get("http://localhost/sd/smartCitizen.php");
+ 
   while (client.available()) {
        char c = client.read();
-       if( c == '{'  ){ if( startData==false){ startData=true; } }
-       if(startData==true){ results[index] = c; index++; }
+       results[index] = c; index++;
   }
   results[index]=0;
-  
-  #ifdef DEBUG
-    Serial.print("SmartCitizen: ");
-    Serial.println("disconnected");
-  #endif
-    
-  startData=false;
   index = 0;
-  
-  StaticJsonBuffer<550> jsonBuffer;
-  JsonObject& root = jsonBuffer.parseObject(results);
-  if (!root.success()) {
-    Serial.println("parseObject: failed");
-    return false;
-  }
-    
-  temp  = root["devices"][0]["posts"]["temp"];
-  hum   = root["devices"][0]["posts"]["hum"];
-  co    = root["devices"][0]["posts"]["co"];
-  no2   = root["devices"][0]["posts"]["no2"];
-  noise = root["devices"][0]["posts"]["noise"];
-  light = root["devices"][0]["posts"]["light"];
-  batt  = root["devices"][0]["posts"]["bat"];
-  
-  return true;
-  
+
+  #ifdef DEBUG
+    Serial.println("--- BEGIN getApiSmartCitizen ---");
+    Serial.print( "Result: " ); Serial.println(String( results ));
+    Serial.println("---- END getApiSmartCitizen ----");
+  #endif
 }
 
 /**********************************************************************************/
@@ -96,8 +64,10 @@ void getPh() {
   }
   
   #ifdef DEBUG
+    Serial.println("--- BEGIN getPh ---");
     Serial.print("Volt: "); Serial.println(voltage); 
-    Serial.print("Ph:   "); Serial.println(pHValue); 
+    Serial.print("Ph:   "); Serial.println(pHValue);
+    Serial.println("---- END getPh ----");
   #endif
 }
 
@@ -189,7 +159,9 @@ float readEC( byte isens ) {
   }
   
   #ifdef DEBUG
+    Serial.println("--- BEGIN readEC ---");
     Serial.print( "EC: " ); Serial.println( CS[isens] ); 
+    Serial.println("---- END readEC ----");
   #endif
   
   return CS[isens];
@@ -200,6 +172,12 @@ float readEC( byte isens ) {
 void apriGocciolatore() {
    Serial.println( "apri" );
    digitalWrite(pinFert1,HIGH);
+   
+   #ifdef DEBUG
+    Serial.println("--- BEGIN apriGocciolatore ---");
+    Serial.print( "Gocciolatore: HIGH" ); 
+    Serial.println("---- END apriGocciolatore ----");
+   #endif
 }
 
 /**********************************************************************************/
@@ -207,22 +185,12 @@ void apriGocciolatore() {
 void chiudiGocciolatore() {
    Serial.println( "chiudi" );
    digitalWrite(pinFert1,LOW);
+   
+   #ifdef DEBUG
+    Serial.println("--- BEGIN chiudiGocciolatore ---");
+    Serial.print( "Gocciolatore: LOW" ); 
+    Serial.println("---- END chiudiGocciolatore ----");
+   #endif
 }
 
 /**********************************************************************************/
-
-void writeText( String text1, String text2 ) {
-  /*
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print(text1);
-  lcd.setCursor(0, 1);
-  lcd.print(text2);
-  */
-  Serial.print(text1);
-  Serial.print(text2);
-}
-
-/**********************************************************************************/
-
-
