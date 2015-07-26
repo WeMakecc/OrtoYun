@@ -83,7 +83,7 @@ void loop () {
   } else { 
     fertil = 0;
   }
-  if ( currHour == 22 && currMin == 35  && statusFert == true) { statusFert = false; }
+  if ( currHour == 22 && currMin == 31  && statusFert == true) { statusFert = false; }
 
   /**********************************************************************************/
   
@@ -116,15 +116,19 @@ void loop () {
         digitalWrite(pinPump1,HIGH); delay( 100 );
         statusPump1 = true;
       }
-      if ( !statusPump2 ) {
-        digitalWrite(pinPump2,HIGH); delay( 100 );
-        statusPump2 = true;
-      }
   } else {
      if ( statusPump1 ) {
          digitalWrite(pinPump1,LOW); delay( 100 );
          statusPump1 = false;
      }
+  } 
+
+  if ( 6 <= currHour && currHour <= 23 ) {
+      if ( !statusPump2 ) {
+        digitalWrite(pinPump2,HIGH); delay( 100 );
+        statusPump2 = true;
+      }
+  } else {
      if ( statusPump2 ) {
          digitalWrite(pinPump2,LOW); delay( 100 );
          statusPump2 = false;

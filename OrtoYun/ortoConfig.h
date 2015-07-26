@@ -11,7 +11,7 @@
 #define pinLamp1     7            // Relay right Light
 #define pinLamp2     8            // Relay left Light
 #define pinPump1     12            // Relay Pump 1
-#define pinPump2     13            // Relay Pump 2
+#define pinPump2     13            // Relay Pump 2 - SmartCitizen
 #define pinFert1     3             // elettrovalvola Fertilizzante
 
 int index = 0;
